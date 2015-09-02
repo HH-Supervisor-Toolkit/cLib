@@ -28,7 +28,7 @@ JNIEXPORT jobjectArray JNICALL Java_app_JNI_CLibrary_enumWindows
             env->FindClass("java/lang/String"),
             NULL);
 
-    for (int i = 0; i < names.size(); i++) {
+    for (unsigned int i = 0; i < names.size(); i++) {
         env->SetObjectArrayElement(nameList, i, env->NewStringUTF(names[i]));
     }
     
