@@ -16,23 +16,23 @@ BOOL CALLBACK winEnum(HWND hwnd, LPARAM lPram) {
     names.push_back(name);
 
     return true;
-
 }
 
 JNIEXPORT jobjectArray JNICALL Java_app_JNI_CLibrary_enumWindows
-  (JNIEnv *env, jobject obj) {
+(JNIEnv *env, jobject obj) {
 
-    EnumWindows(winEnum, NULL);
+	EnumWindows(winEnum, NULL);
+	unsigned int nameSize = names.size();
 
-    jobjectArray nameList = (jobjectArray) env->NewObjectArray(names.size(),
-            env->FindClass("java/lang/String"),
-            NULL);
+	jobjectArray nameList = (jobjectArray)env->NewObjectArray(nameSize, env->FindClass("java/lang/String"), NULL);
 
-    for (unsigned int i = 0; i < names.size(); i++) {
-        env->SetObjectArrayElement(nameList, i, env->NewStringUTF(names[i]));
-    }
-    
-    names.erase(names.begin(), names.begin()+names.size());
+	for (unsigned int i = 0; i < nameSize; i++) {
+		char* temp = names[0];
+		env->SetObjectArrayElement(nameList, i, env->NewStringUTF(temp));
 
-    return nameList;
+		names.erase(names.begin());
+		delete temp;
+	}
+
+	return nameList;
 }
