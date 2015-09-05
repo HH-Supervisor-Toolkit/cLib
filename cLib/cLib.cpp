@@ -23,6 +23,7 @@ BOOL CALLBACK winEnum(HWND hwnd, LPARAM lPram) {
 	env->SetObjectArrayElement(*nameList, *index, env->NewStringUTF(name));
 
 	(*index)++;
+	delete name;
 
 	return true;
 }

@@ -49,7 +49,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Java\jdk1.8.0_60\include;C:\Program Files %28x86%29\Java\jdk1.8.0_60\include\win32;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Java\jdk1.8.0_40\include;C:\Program Files %28x86%29\Java\jdk1.8.0_40\include\win32;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Program Files %28x86%29\Java\jdk1.8.0_60\include;C:\Program Files %28x86%29\Java\jdk1.8.0_60\include\win32;$(IncludePath)</IncludePath>
