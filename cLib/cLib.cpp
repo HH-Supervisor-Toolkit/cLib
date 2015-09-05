@@ -1,38 +1,55 @@
 #include "cLib.h"
 #include "Windows.h"
 #include "Winuser.h"
-#include <vector>
 
-std::vector<char*> names;
+struct EnumData {
+	jobjectArray *nameList;
+	JNIEnv *env;
+	int* index;
+};
 
 BOOL CALLBACK winEnum(HWND hwnd, LPARAM lPram) {
 
-    int length = GetWindowTextLength(hwnd);
+	EnumData *enumData = (EnumData*)lPram;
 
-    char* name = new char[length + 1];
+	jobjectArray *nameList = enumData->nameList;
+	JNIEnv *env = enumData->env;
+	int *index = enumData->index;
 
-    GetWindowTextA(hwnd, name, length + 1);
+	int length = GetWindowTextLength(hwnd) + 1;
+	char* name = new char[length];
 
-    names.push_back(name);
+	GetWindowTextA(hwnd, name, length);
+	env->SetObjectArrayElement(*nameList, *index, env->NewStringUTF(name));
 
-    return true;
+	(*index)++;
 
+	return true;
+}
+
+BOOL CALLBACK winNum(HWND hwnd, LPARAM lPram) {
+
+	int *winCount = (int*)lPram;
+	(*winCount)++;
+
+	return true;
 }
 
 JNIEXPORT jobjectArray JNICALL Java_app_JNI_CLibrary_enumWindows
-  (JNIEnv *env, jobject obj) {
+(JNIEnv *env, jobject obj) {
 
-    EnumWindows(winEnum, NULL);
+	int winCount = 0;
+	EnumWindows(winNum, (LPARAM)&winCount);
+	
+	jobjectArray nameList = (jobjectArray)env->NewObjectArray(winCount, env->FindClass("java/lang/String"), NULL);
+	int index = 0;
 
-    jobjectArray nameList = (jobjectArray) env->NewObjectArray(names.size(),
-            env->FindClass("java/lang/String"),
-            NULL);
+	EnumData enumData;
+	enumData.env = env;
+	enumData.nameList = &nameList;
+	enumData.index = &index;
 
-    for (int i = 0; i < names.size(); i++) {
-        env->SetObjectArrayElement(nameList, i, env->NewStringUTF(names[i]));
-    }
-    
-    names.erase(names.begin(), names.begin()+names.size());
+	EnumWindows(winEnum, (LPARAM) &enumData);
 
-    return nameList;
+	return nameList;
 }
